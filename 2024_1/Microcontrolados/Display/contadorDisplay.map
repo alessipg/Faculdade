@@ -1,0 +1,66 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Wed Apr 17 14:52:14 2024
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x0000b0
+.config_300001_CONTADORDISPLAY.O    romdata   0x300001    program   0x000001
+.config_300002_CONTADORDISPLAY.O    romdata   0x300002    program   0x000001
+.config_300003_CONTADORDISPLAY.O    romdata   0x300003    program   0x000001
+.config_300005_CONTADORDISPLAY.O    romdata   0x300005    program   0x000001
+.config_300006_CONTADORDISPLAY.O    romdata   0x300006    program   0x000001
+.config_300008_CONTADORDISPLAY.O    romdata   0x300008    program   0x000001
+.config_300009_CONTADORDISPLAY.O    romdata   0x300009    program   0x000001
+.config_30000A_CONTADORDISPLAY.O    romdata   0x30000a    program   0x000001
+.config_30000B_CONTADORDISPLAY.O    romdata   0x30000b    program   0x000001
+.config_30000C_CONTADORDISPLAY.O    romdata   0x30000c    program   0x000001
+.config_30000D_CONTADORDISPLAY.O    romdata   0x30000d    program   0x000001
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x0000af      
+                            0x300001    0x300003      
+                            0x300005    0x300006      
+                            0x300008    0x30000d      
+            187 out of 33048 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                 CONTADOR   0x000024    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                 CONTINUA   0x000046    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                   INICIO   0x000004    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+               PROGRAMA_A   0x00001a    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                      REP   0x00009c    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                     REP3   0x000074    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                     REP4   0x00007c    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                   REPETE   0x000094    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                   T100ms   0x000070    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                   T250ms   0x000090    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                   TABELA   0x00004e    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   INICIO   0x000004    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+               PROGRAMA_A   0x00001a    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                 CONTADOR   0x000024    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                 CONTINUA   0x000046    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                   TABELA   0x00004e    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                   T100ms   0x000070    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                     REP3   0x000074    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                     REP4   0x00007c    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                   T250ms   0x000090    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                   REPETE   0x000094    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+                      REP   0x00009c    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\contadorDisplay.asm
+
+

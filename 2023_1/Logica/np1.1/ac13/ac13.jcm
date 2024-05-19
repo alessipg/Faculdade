@@ -1,0 +1,24 @@
+/*
+    ac13
+    ---------------------------
+
+    JaCaMo Application File
+
+    This file defines the initial state of the MAS (initial agents, environment, organisation, ....)
+
+    (see jacamo/doc/jcm.html for more information about what can be defined in this file)
+
+    JaCaMo 1.1
+    June 22, 2023 - 09:44:04
+*/
+
+mas ac13 {
+
+    agent ct
+
+    agent va
+
+    
+
+}
+

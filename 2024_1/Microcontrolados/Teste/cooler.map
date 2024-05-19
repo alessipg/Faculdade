@@ -1,0 +1,52 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Mon Apr 08 14:29:39 2024
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000020
+  .config_300001_COOLER.O    romdata   0x300001    program   0x000001
+  .config_300002_COOLER.O    romdata   0x300002    program   0x000001
+  .config_300003_COOLER.O    romdata   0x300003    program   0x000001
+  .config_300005_COOLER.O    romdata   0x300005    program   0x000001
+  .config_300006_COOLER.O    romdata   0x300006    program   0x000001
+  .config_300008_COOLER.O    romdata   0x300008    program   0x000001
+  .config_300009_COOLER.O    romdata   0x300009    program   0x000001
+  .config_30000A_COOLER.O    romdata   0x30000a    program   0x000001
+  .config_30000B_COOLER.O    romdata   0x30000b    program   0x000001
+  .config_30000C_COOLER.O    romdata   0x30000c    program   0x000001
+  .config_30000D_COOLER.O    romdata   0x30000d    program   0x000001
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x00001f      
+                            0x300001    0x300003      
+                            0x300005    0x300006      
+                            0x300008    0x30000d      
+            43 out of 33048 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   INICIO   0x000004    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Teste\cooler.asm
+                     LOOP   0x000006    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Teste\cooler.asm
+                   T100ms   0x00001e    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Teste\cooler.asm
+                  T5000ms   0x000016    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Teste\cooler.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   INICIO   0x000004    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Teste\cooler.asm
+                     LOOP   0x000006    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Teste\cooler.asm
+                  T5000ms   0x000016    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Teste\cooler.asm
+                   T100ms   0x00001e    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Teste\cooler.asm
+
+

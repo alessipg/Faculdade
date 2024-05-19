@@ -1,0 +1,1286 @@
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00002 ;This program implements a microwave oven controller.  A time is set using
+                      00003 ;the matrix keypad.  Time is counted down and displayed on two seven-segment
+                      00004 ;LEDs.  Other LEDs indicate cooking status.
+                      00005 ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00006 
+                      00007                         Title "Microwave"
+                      00008                         #include <p18F4520.inc> ;Header file for PIC18F4520
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC18F4520 processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      01488         LIST
+                      00009 
+Warning[207]: Found label after column 1. (ZERO)
+  00000000            00010                         ZERO    EQU     0x00                    ;Zero register
+Warning[207]: Found label after column 1. (BCD0)
+  00000001            00011                         BCD0    EQU     0x01                    ;Time low BCD Digit
+Warning[207]: Found label after column 1. (BCD1)
+  00000002            00012                         BCD1    EQU     0x02                    ;Time high BCD Digit
+Warning[207]: Found label after column 1. (TEMP)
+  00000010            00013                         TEMP    EQU     0x10                    ;Temporary register for GETCODE
+Warning[207]: Found label after column 1. (KYSOPEN)
+  00000011            00014                         KYSOPEN EQU     0x11                    ;Code register for all keys open
+Warning[207]: Found label after column 1. (START)
+  00000012            00015                         START   EQU     0x12                    ;Code register for Start
+Warning[207]: Found label after column 1. (STOP)
+  00000013            00016                         STOP    EQU     0x13                    ;Code register for Stop
+Warning[207]: Found label after column 1. (DOOR)
+  00000014            00017                         DOOR    EQU     0x14                    ;Code register for Door
+Warning[207]: Found label after column 1. (SCALE)
+  000000C0            00018                         SCALE   EQU     0xC0                    ;Scale for Timer0
+                      00019 
+                      00020 
+000000                00021                         ORG     0x00                            ;Begin assembly
+000000 EF10 F000      00022                         GOTO    MAIN                    ;Program begins at 0020H
+                      00023 
+000008                00024                         ORG     0x08
+000008 EF6D F000      00025                         GOTO    TMR0_ISR                ;Timer0 Interrupt Vector
+                      00026 
+000020                00027                         ORG     0x20
+000020 0EE0           00028 MAIN:                   MOVLW   B'11100000'             ;Init Timer0:interrupt enable
+000022 6EF2           00029                         MOVWF   INTCON
+000024 0E44           00030                         MOVLW   B'01000100'             ;Timer0:8-bit,internal clock,prescale-1:32
+000026 6ED5           00031                         MOVWF   T0CON
+000028 0EC0           00032                         MOVLW   SCALE                   ;Low count
+00002A 6ED6           00033                         MOVWF   TMR0L                   ;Load low count in Timer0
+00002C 94F2           00034                         BCF     INTCON,TMR0IF           ;Clear TIMR0 overflow flag ? Reset timer
+00002E 0EF0           00035                         MOVLW   0xF0                    ;Enable RB7-RB4 as input and RB3-RB0 as output
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE  2
+Microwave
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000030 6E93           00036                         MOVWF   TRISB
+000032 0E0F           00037                         MOVLW   0x0F                    ;PORTA, PORTB Digital
+000034 6EC1           00038                         MOVWF   ADCON1
+000036 6A00           00039                         CLRF    ZERO                    ;Code for zero
+000038 0E80           00040                         MOVLW   0x80                    ;Code when all keys are open
+00003A 6E11           00041                         MOVWF   KYSOPEN
+00003C 0E0F           00042                         MOVLW   0x0F                    ;Code for Start
+00003E 6E12           00043                         MOVWF   START
+000040 0E0A           00044                         MOVLW   0x0A                            ;Code for Stop
+000042 6E13           00045                         MOVWF   STOP
+000044 0E0B           00046                         MOVLW   0x0B                                    ;Code for Door Open
+000046 6E14           00047                         MOVWF   DOOR
+000048 0E00           00048                         MOVLW   0X00
+                      00049 
+                      00050 
+                      00051 
+00004A 6E92           00052                         MOVWF   TRISA                   ;Init PORTs A,C,D as output ports
+00004C 6E94           00053                         MOVWF   TRISC
+00004E 6E95           00054                         MOVWF   TRISD
+000050 6E80           00055                         MOVWF   PORTA
+000052 0EC0           00056                         MOVLW   0xC0                    ;Init LEDs OFF
+000054 6E82           00057                         MOVWF   PORTC                   ;Init 7-Seg LEDs OFF
+000056 0EC0           00058                         MOVLW   0xC0
+000058 6E83           00059                         MOVWF   PORTD
+00005A 6A01           00060                         CLRF    BCD0                    ;Init Time=0
+00005C 6A02           00061                         CLRF    BCD1
+                      00062 
+                      00063 
+                      00064 
+00005E EC47 F000      00065 I_LOOP:                 CALL    INPUT                   ;Call Input to get Time
+000062 EC7B F000      00066                         CALL    KEYCHK                  ;Check for Start
+000066 6212           00067                         CPFSEQ  START
+000068 D7FA           00068                         BRA     I_LOOP
+                      00069 
+                      00070 
+00006A 8ED5           00071 C_START:                BSF     T0CON,TMR0ON            ;Enable Timer0
+00006C EC51 F000      00072 C_LOOP:                 CALL    COOK                    ;Cooking
+000070 5001           00073                         MOVF    BCD0, W                 ;Time = 0?
+000072 1002           00074                         IORWF   BCD1, W
+000074 6200           00075                         CPFSEQ  ZERO
+000076 D7FA           00076                         BRA     C_LOOP
+000078 ECD0 F000      00077                         CALL    OUTLED
+00007C 9280           00078                         BCF     PORTA, 1                ;Turn off magnetron
+00007E 9ED5           00079                         BCF     T0CON,TMR0ON            ;Disable timer
+000080 8080           00080 BUZZER:                 BSF     PORTA, 0                ;Turn on buzzer
+000082 EC7B F000      00081                         CALL    KEYCHK                  ;Door?
+000086 6214           00082                         CPFSEQ  DOOR                    ;If door not opened, loop
+000088 D7FB           00083                         BRA     BUZZER
+00008A 9080           00084                         BCF     PORTA, 0                ;Turn off buzzer
+00008C D7E8           00085                         BRA     I_LOOP                  ;Return to input loop
+                      00086                 ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00087                 ;Function:      INPUT gets User Input for Time.
+                      00088                 ;                       Calls KEYCHK and OUTLED.
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE  3
+Microwave
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00089                 ;Output:        Time in BCD1
+                      00090                 ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00091 
+00008E EC7B F000      00092 INPUT:          CALL    KEYCHK          ;If KEYCHK returns B'10000000' no keys were pressed
+000092 6413           00093                 CPFSGT  STOP
+000094 0012           00094                 RETURN
+                      00095 
+000096 6E02           00096                 MOVWF   BCD1            ;If so, move to BCD1
+000098 0E00           00097                 MOVLW   0x00
+00009A 6E01           00098                 MOVWF   BCD0
+00009C ECD0 F000      00099                 CALL    OUTLED          ;Display
+                      00100 
+0000A0 0012           00101                 RETURN
+                      00102                 ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00103                 ;Function:      COOK checks for Stop and Door and Lights Magnetron:
+                      00104                 ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00105 
+                      00106 
+                      00107 
+0000A2 8280           00108 COOK:           BSF     PORTA,1
+0000A4 8ED5           00109                 BSF     T0CON,TMR0ON
+0000A6 EC7B F000      00110                 CALL    KEYCHK          ; CHECK BUTTON
+0000AA 6213           00111                 CPFSEQ  STOP            ; CHECK FOR STOP
+0000AC 6214           00112                 CPFSEQ  DOOR            ; IF NOT STOPPED, CHECK FOR DOOR
+0000AE EF64 F000      00113                 GOTO   STOPB
+0000B2 9280           00114 DOORWAIT:       BCF     PORTA, 1        ; IF DOOR OPEN, MAGNETRON OFF
+0000B4 9ED5           00115                 BCF     T0CON,TMR0ON    ;       "       TIMER OFF
+0000B6 EC7B F000      00116                 CALL    KEYCHK
+0000BA 6211           00117                 CPFSEQ  KYSOPEN
+0000BC EF59 F000      00118                 GOTO    DOORWAIT
+0000C0 8ED5           00119                 BSF     T0CON,TMR0ON
+0000C2 8280           00120                 BSF     PORTA, 1
+0000C4 EF51 F000      00121                 GOTO    COOK
+                      00122 
+0000C8 6213           00123 STOPB:          CPFSEQ  STOP
+0000CA EF6A F000      00124                 GOTO    RSM
+0000CE 6A01           00125                 CLRF    BCD0
+0000D0 6A02           00126                 CLRF    BCD1
+0000D2 0012           00127                 RETURN
+                      00128 
+                      00129 
+                      00130 
+                      00131 
+0000D4 8280           00132 RSM:            BSF     PORTA, 1        ; MAGNETRON ON
+0000D6 8ED5           00133                 BSF     T0CON,TMR0ON    ;
+0000D8 0012           00134                 RETURN                  ; RETURN TO C_LOOP
+                      00135 
+                      00136                 ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00137                 ;Timer0 Interrupt Service Routine:  Resets Timer0.
+                      00138                 ;Decrements Time and calls OUTLED.
+                      00139                 ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00140 
+0000DA 0EC0           00141 TMR0_ISR:               MOVLW   SCALE                   ;Low count
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE  4
+Microwave
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0000DC 6ED6           00142                         MOVWF   TMR0L                   ;Load low count in Timer0
+0000DE 94F2           00143                         BCF     INTCON,TMR0IF           ;Clear TIMR0 overflow flag ? Reset timer
+                      00144 
+0000E0 0E00           00145                         MOVLW   0X00
+0000E2 6201           00146                         CPFSEQ  BCD0
+0000E4 D004           00147                         BRA     DLOOP
+0000E6 0602           00148                         DECF    BCD1,f
+0000E8 0E09           00149                         MOVLW   0x09
+0000EA 6E01           00150                         MOVWF   BCD0
+0000EC D001           00151                         BRA     CLOOP
+0000EE 0601           00152 DLOOP:                  DECF    BCD0,f
+0000F0 ECD0 F000      00153 CLOOP:                  CALL    OUTLED
+                      00154 
+0000F4 0011           00155                         RETFIE  FAST                    ;Return from Interrupt
+                      00156 
+                      00157         ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00158         ;Function: KEYCHK checks first that all keys are open, then     :
+                      00159             ;checks a key closure using KEYCODE                             :
+                      00160                 ;Output: Sets Bit7 if all keys are open                         :
+                      00161                 ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00162 
+0000F6 0E0F           00163 KEYCHK:                 MOVLW   0x0F            ;Set RB0-RB3 Hi
+0000F8 6E81           00164                         MOVWF   PORTB
+0000FA 5081           00165                         MOVF    PORTB,W         ;Read PORTB
+0000FC 6211           00166                         CPFSEQ  KYSOPEN         ;Are all keys open?
+0000FE D002           00167                         BRA     KEYCODE
+000100 0E80           00168                         MOVLW   B'10000000'     ;Return a 1 in Bit7 if all open
+000102 0012           00169                         RETURN
+                      00170 
+                      00171                 ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00172                 ;KEYCODE encodes the key and identify the key position:         :
+                      00173                 ;Output: Encoded key position in W register                     :
+                      00174                 ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00175 
+000104                00176 KEYCODE:
+000104 0E00           00177 COLRB0:         MOVLW   0x00            ;Get ready to scan Column RB0
+000106 1681           00178                 ANDWF   PORTB, F        ;All other keys should be 0s
+000108 8081           00179 SETRB0:         BSF     PORTB, 0        ;Set Column - RB0
+00010A A881           00180 KEYB04:         BTFSS   PORTB, 4        ;Check RB4, if = 1, find code
+00010C D002           00181                         BRA             KEYB05          ;If RB4 = 0, check next key
+00010E 0E01           00182                         MOVLW   0x01            ;Code for Key '1'
+000110 0012           00183                         RETURN
+000112 AA81           00184 KEYB05:         BTFSS   PORTB, 5        ;Check RB5, if = 1, find code
+000114 D002           00185                         BRA             KEYB06          ;If RB5 = 0, check next key
+000116 0E04           00186                         MOVLW   0x04            ;Code for key '4'
+000118 0012           00187                         RETURN
+00011A AC81           00188 KEYB06:         BTFSS   PORTB, 6        ;Check RB6, if = 1, find code
+00011C D002           00189                         BRA             KEYB07          ;If RB6 = 0, check next key
+00011E 0E07           00190                         MOVLW   0x07            ;Code for key '7'
+000120 0012           00191                         RETURN
+000122 AE81           00192 KEYB07:         BTFSS   PORTB, 7        ;Check RB7, if = 1, find code
+000124 D002           00193                         BRA             COLRB1          ;If RB7 = 0, go to next column
+000126 0E0A           00194                         MOVLW   0x0A            ;Code for key 'A'
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE  5
+Microwave
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000128 0012           00195                         RETURN
+00012A 0E00           00196 COLRB1:         MOVLW   0x00            ;Get ready to scan Column RB1
+00012C 1681           00197                         ANDWF   PORTB, F        ;All other keys should be 0s
+00012E 8281           00198 SETRB1:         BSF             PORTB, 1        ;Set Column - RB1
+000130 A881           00199 KEYB14:         BTFSS   PORTB, 4        ;Check RB4, if = 1, find code
+000132 D002           00200                         BRA             KEYB15          ;If RB4 = 0, check next key
+000134 0E02           00201                         MOVLW   0x02            ;Code for Key '2'
+000136 0012           00202                         RETURN
+000138 AA81           00203 KEYB15:         BTFSS   PORTB, 5        ;Check RB5, if = 1, find code
+00013A D002           00204                         BRA             KEYB16          ;If RB5 = 0, check next key
+00013C 0E05           00205                         MOVLW   0x05            ;Code for key '5'
+00013E 0012           00206                         RETURN
+000140 AC81           00207 KEYB16:         BTFSS   PORTB, 6        ;Check RB6, if = 1, find code
+000142 D002           00208                         BRA             KEYB17          ;If RB6 = 0, check next key
+000144 0E08           00209                         MOVLW   0x08            ;Code for key '8'
+000146 0012           00210                         RETURN
+000148 AE81           00211 KEYB17:         BTFSS   PORTB, 7        ;Check RB7, if = 1, find code
+00014A D002           00212                         BRA             COLRB2          ;If RB7 = 0, go to next column
+00014C 0E00           00213                         MOVLW   0x00            ;Code for key '0'
+00014E 0012           00214                         RETURN
+000150 0E00           00215 COLRB2:         MOVLW   0x00            ;Get ready to scan Column RB2
+000152 1681           00216                         ANDWF   PORTB, F        ;All other keys should be 0s
+000154 8481           00217 SETRB2:         BSF             PORTB, 2        ;Set Column - RB2
+000156 A881           00218 KEYB24:         BTFSS   PORTB, 4        ;Check RB4, if = 1, find code
+000158 D002           00219                         BRA             KEYB25          ;If RB4 = 0, check next key
+00015A 0E03           00220                         MOVLW   0x03            ;Code for Key '3'
+00015C 0012           00221                         RETURN
+00015E AA81           00222 KEYB25:         BTFSS   PORTB, 5        ;Check RB5, if = 1, find code
+000160 D002           00223                         BRA             KEYB26          ;If RB1 = 5, check next key
+000162 0E06           00224                         MOVLW   0x06            ;Code for key '6'
+000164 0012           00225                         RETURN
+000166 AC81           00226 KEYB26:         BTFSS   PORTB, 6        ;Check RB6, if = 1, find code
+000168 D002           00227                         BRA             KEYB27          ;If RB6 = 0, check next key
+00016A 0E09           00228                         MOVLW   0x09            ;Code for key '9'
+00016C 0012           00229                         RETURN
+00016E AE81           00230 KEYB27:         BTFSS   PORTB, 7        ;Check RB7, if = 1, find code
+000170 D002           00231                         BRA             COLRB3          ;If RB7 = 0, go to next column
+000172 0E0B           00232                         MOVLW   0x0B            ;Code for key 'B'
+000174 0012           00233                         RETURN
+000176 0E00           00234 COLRB3:         MOVLW   0x00            ;Get ready to scan Column RB3
+000178 1681           00235                         ANDWF   PORTB, F        ;All other keys should be 0s
+00017A 8681           00236 SETRB3:         BSF             PORTB, 3        ;Set Column - RB3
+00017C A881           00237 KEYB34:         BTFSS   PORTB, 4        ;Check RB4, if = 1, find code
+00017E D002           00238                         BRA             KEYB35          ;If RB4 = 0, check next key
+000180 0E0C           00239                         MOVLW   0x0C            ;Code for Key 'C'
+000182 0012           00240                         RETURN
+000184 AA81           00241 KEYB35:         BTFSS   PORTB, 5        ;Check RB5, if = 1, find code
+000186 D002           00242                         BRA             KEYB36          ;If RB5 = 0, check next key
+000188 0E0D           00243                         MOVLW   0x0D            ;Code for key 'D'
+00018A 0012           00244                         RETURN
+00018C AC81           00245 KEYB36:         BTFSS   PORTB, 6        ;Check RB6, if = 1, find code
+00018E D002           00246                         BRA             KEYB37          ;If RB6 = 0, check next key
+000190 0E0E           00247                         MOVLW   0x0E            ;Code for key 'E'
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE  6
+Microwave
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000192 0012           00248                         RETURN
+000194 AE81           00249 KEYB37:         BTFSS   PORTB, 7        ;Check RB7, if = 1, find code
+000196 D002           00250                 BRA     RTN                     ;If RB7 = 0, go to next column
+000198 0E0F           00251                 MOVLW   0x0F            ;Code for key 'F'
+00019A 0012           00252                 RETURN
+                      00253 
+00019C 0E80           00254 RTN:            MOVLW   B'10000000'     ;Return a 1 in Bit7 if all open
+00019E 0012           00255                 RETURN
+                      00256 
+                      00257                 ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00258                 ;Function:      OUTLED gets the two BCD digits from BCD1 and            :
+                      00259                 ;               BCD0, gets seven-segment code by calling another        :
+                      00260                 ;               subroutine GETCODE and displays BCD digits at           :
+                      00261                 ;               PORTD and PORTC                                         :
+                      00262                 ;Input:         BCD digits in BCD1 and BCD0                             :
+                      00263                 ;Calls another subroutine GETCODE                                       :
+                      00264         ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00265 
+0001A0 5001           00266 OUTLED:                 MOVF    BCD0,W                  ;Get low-order BCD digit in W
+0001A2 ECDB F000      00267                         CALL    GETCODE                 ;Find its seven-segment code
+0001A6 CFF5 FF82      00268                         MOVFF   TABLAT,PORTC    ;Display it at PORTC
+0001AA 5002           00269                         MOVF    BCD1,W                  ;Get high-order BCD
+0001AC ECDB F000      00270                         CALL    GETCODE                 ;Get its code
+0001B0 CFF5 FF83      00271                         MOVFF   TABLAT,PORTD    ;Display at PORTD
+0001B4 0012           00272                         RETURN
+                      00273                 ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00274                 ;Function:      GETCODE.  This subroutine gets a BCD digit from WREG,           :
+                      00275                 ;               looks up its seven-segment code, and returns it in TABLAT       :
+                      00276                 ;Input:         BCD digit in W                                                  :
+                      00277                 ;Output:        Seven-segment LED code in TABLAT                                :
+                      00278         ;::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                      00279 
+0001B6 6E10           00280 GETCODE:        MOVWF   TEMP                    ;Save BCD digit in TEMP
+0001B8 0E00           00281                         MOVLW   UPPER LEDCODE   ;Copy upper bits of LEDCODE to Table Pointer
+0001BA 6EF8           00282                         MOVWF   TBLPTRU
+0001BC 0E01           00283                         MOVLW   HIGH LEDCODE    ;Copy high bits to Table Pointer
+0001BE 6EF7           00284                         MOVWF   TBLPTRH
+0001C0 0ED0           00285                         MOVLW   LOW LEDCODE             ;Copy low bits to Table Pointer
+0001C2 6EF6           00286                         MOVWF   TBLPTRL
+0001C4 5010           00287                         MOVF    TEMP,W                  ;Get BCD digit from TEMP
+0001C6 26F6           00288                         ADDWF   TBLPTRL,F               ;Add BCD digit to Table Pointer
+0001C8 E301           00289                         BNC             READ                    ;Check for Carry
+0001CA 2AF7           00290                         INCF    TBLPTRH,F
+0001CC 0008           00291 READ:           TBLRD*                                  ;Read LED code from memory
+0001CE 0012           00292                 RETURN
+                      00293 
+                      00294 
+                      00295 
+                      00296 
+0001D0 F9C0 B0A4 0099 00297 LEDCODE:        DB              0xC0, 0xF9, 0xA4, 0xB0, 0x99    ;Codes for digits 0 to 4
+0001D6 8292 80F8 0090 00298                         DB              0x92, 0x82, 0xF8, 0x80, 0x90    ;Codes for digits 5 to 9
+                      00299 
+                      00300                         END
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE  7
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+A                                 00000000
+ABDEN                             00000000
+ABDOVF                            00000007
+ACCESS                            00000000
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ACQT0                             00000003
+ACQT1                             00000004
+ACQT2                             00000005
+ADCON0                            00000FC2
+ADCON1                            00000FC1
+ADCON2                            00000FC0
+ADCS0                             00000000
+ADCS1                             00000001
+ADCS2                             00000002
+ADDEN                             00000003
+ADEN                              00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADIP                              00000006
+ADMSK1                            00000001
+ADMSK2                            00000002
+ADMSK3                            00000003
+ADMSK4                            00000004
+ADMSK5                            00000005
+ADON                              00000000
+ADRES                             00000FC3
+ADRESH                            00000FC4
+ADRESL                            00000FC3
+AN0                               00000000
+AN1                               00000001
+AN10                              00000001
+AN11                              00000004
+AN12                              00000000
+AN2                               00000002
+AN3                               00000003
+AN4                               00000005
+AN5                               00000000
+AN6                               00000001
+AN7                               00000002
+AN8                               00000002
+AN9                               00000003
+BANKED                            00000001
+BAUDCON                           00000FB8
+BAUDCTL                           00000FB8
+BCD0                              00000001
+BCD1                              00000002
+BCLIE                             00000003
+BCLIF                             00000003
+BCLIP                             00000003
+BF                                00000000
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE  8
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+BGST                              00000005
+BOR                               00000000
+BRG16                             00000003
+BRGH                              00000002
+BSR                               00000FE0
+BUZZER                            00000080
+C                                 00000000
+C1INV                             00000004
+C1OUT_CMCON                       00000006
+C1OUT_PORTA                       00000004
+C2INV                             00000005
+C2OUT_CMCON                       00000007
+C2OUT_PORTA                       00000005
+CCP1                              00000002
+CCP1CON                           00000FBD
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1IP                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           00000FBA
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2IP                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCP2_PORTB                        00000003
+CCP2_PORTC                        00000001
+CCPR1                             00000FBE
+CCPR1H                            00000FBF
+CCPR1L                            00000FBE
+CCPR2                             00000FBB
+CCPR2H                            00000FBC
+CCPR2L                            00000FBB
+CFGS                              00000006
+CHS0                              00000002
+CHS1                              00000003
+CHS2                              00000004
+CHS3                              00000005
+CIS                               00000003
+CK                                00000006
+CKE                               00000006
+CKP                               00000004
+CLKI                              00000007
+CLKO                              00000006
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE  9
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CLOOP                             000000F0
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             00000FB4
+CMIE                              00000006
+CMIF                              00000006
+CMIP                              00000006
+COLRB0                            00000104
+COLRB1                            0000012A
+COLRB2                            00000150
+COLRB3                            00000176
+COOK                              000000A2
+CREN                              00000004
+CS                                00000002
+CSRC                              00000007
+CVR0                              00000000
+CVR1                              00000001
+CVR2                              00000002
+CVR3                              00000003
+CVRCON                            00000FB5
+CVREF                             00000002
+CVREN                             00000007
+CVROE                             00000006
+CVRR                              00000005
+CVRSS                             00000004
+C_LOOP                            0000006C
+C_START                           0000006A
+D                                 00000005
+DC                                00000001
+DC1B0                             00000004
+DC1B1                             00000005
+DC2B0                             00000004
+DC2B1                             00000005
+DDRA                              TRISA
+DDRB                              TRISB
+DDRC                              TRISC
+DDRD                              TRISD
+DDRE                              TRISE
+DLOOP                             000000EE
+DONE                              00000001
+DOOR                              00000014
+DOORWAIT                          000000B2
+D_A                               00000005
+D_NOT_A                           00000005
+ECCP1AS                           00000FB6
+ECCP1DEL                          00000FB7
+ECCPAS                            00000FB6
+ECCPAS0                           00000004
+ECCPAS1                           00000005
+ECCPAS2                           00000006
+ECCPASE                           00000007
+EEADR                             00000FA9
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE 10
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+EECON1                            00000FA6
+EECON2                            00000FA7
+EEDATA                            00000FA8
+EEIE                              00000004
+EEIF                              00000004
+EEIP                              00000004
+EEPGD                             00000007
+FAST                              00000001
+FERR                              00000002
+FLT0                              00000000
+FLTS                              00000002
+FREE                              00000004
+FSR0                              00000000
+FSR0H                             00000FEA
+FSR0L                             00000FE9
+FSR1                              00000001
+FSR1H                             00000FE2
+FSR1L                             00000FE1
+FSR2                              00000002
+FSR2H                             00000FDA
+FSR2L                             00000FD9
+GCEN                              00000007
+GETCODE                           000001B6
+GIE                               00000007
+GIEH                              00000007
+GIEL                              00000006
+GIE_GIEH                          00000007
+GO                                00000001
+GO_DONE                           00000001
+GO_NOT_DONE                       00000001
+HLVDCON                           00000FD2
+HLVDEN                            00000004
+HLVDIE                            00000002
+HLVDIF                            00000002
+HLVDIN                            00000005
+HLVDIP                            00000002
+HLVDL0                            00000000
+HLVDL1                            00000001
+HLVDL2                            00000002
+HLVDL3                            00000003
+IBF                               00000007
+IBOV                              00000005
+IDLEN                             00000007
+INDF0                             00000FEF
+INDF1                             00000FE7
+INDF2                             00000FDF
+INPUT                             0000008E
+INT0                              00000000
+INT0E                             00000004
+INT0F                             00000001
+INT0IE                            00000004
+INT0IF                            00000001
+INT1                              00000001
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE 11
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+INT1E                             00000003
+INT1F                             00000000
+INT1IE                            00000003
+INT1IF                            00000000
+INT1IP                            00000006
+INT1P                             00000006
+INT2                              00000002
+INT2E                             00000004
+INT2F                             00000001
+INT2IE                            00000004
+INT2IF                            00000001
+INT2IP                            00000007
+INT2P                             00000007
+INTCON                            00000FF2
+INTCON2                           00000FF1
+INTCON3                           00000FF0
+INTEDG0                           00000006
+INTEDG1                           00000005
+INTEDG2                           00000004
+INTSRC                            00000007
+IOFS                              00000002
+IPEN                              00000007
+IPR1                              00000F9F
+IPR2                              00000FA2
+IRCF0                             00000004
+IRCF1                             00000005
+IRCF2                             00000006
+IRVST                             00000005
+IVRST                             00000005
+I_LOOP                            0000005E
+KBI0                              00000004
+KBI1                              00000005
+KBI2                              00000006
+KBI3                              00000007
+KEYB04                            0000010A
+KEYB05                            00000112
+KEYB06                            0000011A
+KEYB07                            00000122
+KEYB14                            00000130
+KEYB15                            00000138
+KEYB16                            00000140
+KEYB17                            00000148
+KEYB24                            00000156
+KEYB25                            0000015E
+KEYB26                            00000166
+KEYB27                            0000016E
+KEYB34                            0000017C
+KEYB35                            00000184
+KEYB36                            0000018C
+KEYB37                            00000194
+KEYCHK                            000000F6
+KEYCODE                           00000104
+KYSOPEN                           00000011
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE 12
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+LATA                              00000F89
+LATA0                             00000000
+LATA1                             00000001
+LATA2                             00000002
+LATA3                             00000003
+LATA4                             00000004
+LATA5                             00000005
+LATA6                             00000006
+LATA7                             00000007
+LATB                              00000F8A
+LATB0                             00000000
+LATB1                             00000001
+LATB2                             00000002
+LATB3                             00000003
+LATB4                             00000004
+LATB5                             00000005
+LATB6                             00000006
+LATB7                             00000007
+LATC                              00000F8B
+LATC0                             00000000
+LATC1                             00000001
+LATC2                             00000002
+LATC3                             00000003
+LATC4                             00000004
+LATC5                             00000005
+LATC6                             00000006
+LATC7                             00000007
+LATD                              00000F8C
+LATD0                             00000000
+LATD1                             00000001
+LATD2                             00000002
+LATD3                             00000003
+LATD4                             00000004
+LATD5                             00000005
+LATD6                             00000006
+LATD7                             00000007
+LATE                              00000F8D
+LATE0                             00000000
+LATE1                             00000001
+LATE2                             00000002
+LEDCODE                           000001D0
+LVDCON                            00000FD2
+LVDEN                             00000004
+LVDIE                             00000002
+LVDIF                             00000002
+LVDIN                             00000005
+LVDIP                             00000002
+LVDL0                             00000000
+LVDL1                             00000001
+LVDL2                             00000002
+LVDL3                             00000003
+LVV0                              00000000
+LVV1                              00000001
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE 13
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+LVV2                              00000002
+LVV3                              00000003
+MAIN                              00000020
+MCLR                              00000003
+N                                 00000004
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BOR                           00000000
+NOT_CS                            00000002
+NOT_DONE                          00000001
+NOT_MCLR                          00000003
+NOT_PD                            00000002
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RD                            00000000
+NOT_RI                            00000004
+NOT_SS                            00000005
+NOT_T1SYNC                        00000002
+NOT_T3SYNC                        00000002
+NOT_TO                            00000003
+NOT_W                             00000002
+NOT_WR                            00000001
+NOT_WRITE                         00000002
+OBF                               00000006
+OERR                              00000001
+OSC1                              00000007
+OSC2                              00000006
+OSCCON                            00000FD3
+OSCFIE                            00000007
+OSCFIF                            00000007
+OSCFIP                            00000007
+OSCTUNE                           00000F9B
+OSTS                              00000003
+OUTLED                            000001A0
+OV                                00000003
+P                                 00000004
+P1A                               00000002
+P1B                               00000005
+P1C                               00000006
+P1D                               00000007
+P1M0                              00000006
+P1M1                              00000007
+PC                                00000FF9
+PCFG0                             00000000
+PCFG1                             00000001
+PCFG2                             00000002
+PCFG3                             00000003
+PCL                               00000FF9
+PCLATH                            00000FFA
+PCLATU                            00000FFB
+PD                                00000002
+PDC0                              00000000
+PDC1                              00000001
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE 14
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PDC2                              00000002
+PDC3                              00000003
+PDC4                              00000004
+PDC5                              00000005
+PDC6                              00000006
+PEIE                              00000006
+PEIE_GIEL                         00000006
+PEN                               00000002
+PGC                               00000006
+PGD                               00000007
+PGM                               00000005
+PIE1                              00000F9D
+PIE2                              00000FA0
+PIR1                              00000F9E
+PIR2                              00000FA1
+PLLEN                             00000006
+PLUSW0                            00000FEB
+PLUSW1                            00000FE3
+PLUSW2                            00000FDB
+POR                               00000001
+PORTA                             00000F80
+PORTB                             00000F81
+PORTC                             00000F82
+PORTD                             00000F83
+PORTE                             00000F84
+POSTDEC0                          00000FED
+POSTDEC1                          00000FE5
+POSTDEC2                          00000FDD
+POSTINC0                          00000FEE
+POSTINC1                          00000FE6
+POSTINC2                          00000FDE
+PR2                               00000FCB
+PREINC0                           00000FEC
+PREINC1                           00000FE4
+PREINC2                           00000FDC
+PROD                              00000FF3
+PRODH                             00000FF4
+PRODL                             00000FF3
+PRSEN                             00000007
+PSA                               00000003
+PSP0                              00000000
+PSP1                              00000001
+PSP2                              00000002
+PSP3                              00000003
+PSP4                              00000004
+PSP5                              00000005
+PSP6                              00000006
+PSP7                              00000007
+PSPIE                             00000007
+PSPIF                             00000007
+PSPIP                             00000007
+PSPMODE                           00000004
+PSSAC0                            00000002
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE 15
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PSSAC1                            00000003
+PSSBD0                            00000000
+PSSBD1                            00000001
+PWM1CON                           00000FB7
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RA6                               00000006
+RA7                               00000007
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RBIP                              00000000
+RBPU                              00000007
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RCEN                              00000003
+RCIDL                             00000006
+RCIE                              00000005
+RCIF                              00000005
+RCIP                              00000005
+RCMT                              00000006
+RCON                              00000FD0
+RCREG                             00000FAE
+RCSTA                             00000FAB
+RD                                00000000
+RD0                               00000000
+RD1                               00000001
+RD16                              00000007
+RD2                               00000002
+RD3                               00000003
+RD4                               00000004
+RD5                               00000005
+RD6                               00000006
+RD7                               00000007
+RE0                               00000000
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE 16
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RE1                               00000001
+RE2                               00000002
+RE3                               00000003
+READ                              000001CC
+RI                                00000004
+RSEN                              00000001
+RSM                               000000D4
+RTN                               0000019C
+RX                                00000007
+RX9                               00000006
+RX9D                              00000000
+RXDTP                             00000005
+R_NOT_W                           00000002
+R_W                               00000002
+S                                 00000003
+SBOREN                            00000006
+SCALE                             000000C0
+SCK                               00000003
+SCKP                              00000004
+SCL                               00000003
+SCS0                              00000000
+SCS1                              00000001
+SDA                               00000004
+SDI                               00000004
+SDO                               00000005
+SEN                               00000000
+SENDB                             00000003
+SETRB0                            00000108
+SETRB1                            0000012E
+SETRB2                            00000154
+SETRB3                            0000017A
+SMP                               00000007
+SP0                               00000000
+SP1                               00000001
+SP2                               00000002
+SP3                               00000003
+SP4                               00000004
+SPBRG                             00000FAF
+SPBRGH                            00000FB0
+SPEN                              00000007
+SREN                              00000005
+SS                                00000005
+SSPADD                            00000FC8
+SSPBUF                            00000FC9
+SSPCON1                           00000FC6
+SSPCON2                           00000FC5
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPIP                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE 17
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+SSPM3                             00000003
+SSPOV                             00000006
+SSPSTAT                           00000FC7
+START                             00000012
+STATUS                            00000FD8
+STKFUL                            00000007
+STKOVF                            00000007
+STKPTR                            00000FFC
+STKUNF                            00000006
+STOP                              00000013
+STOPB                             000000C8
+SWDTE                             00000000
+SWDTEN                            00000000
+SYNC                              00000004
+T016BIT                           00000006
+T08BIT                            00000006
+T0CKI                             00000004
+T0CON                             00000FD5
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0PS0                             00000000
+T0PS1                             00000001
+T0PS2                             00000002
+T0PS3                             00000003
+T0SE                              00000004
+T13CKI                            00000000
+T1CKI                             00000000
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000FCD
+T1OSCEN                           00000003
+T1OSI                             00000001
+T1OSO                             00000000
+T1RUN                             00000006
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000FCA
+T2OUTPS0                          00000003
+T2OUTPS1                          00000004
+T2OUTPS2                          00000005
+T2OUTPS3                          00000006
+T3CCP1                            00000003
+T3CCP2                            00000006
+T3CKPS0                           00000004
+T3CKPS1                           00000005
+T3CON                             00000FB1
+T3SYNC                            00000002
+TABLAT                            00000FF5
+TBLPTR                            00000FF6
+TBLPTRH                           00000FF7
+TBLPTRL                           00000FF6
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE 18
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TBLPTRU                           00000FF8
+TEMP                              00000010
+TMR0                              00000FD6
+TMR0H                             00000FD7
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR0IP                            00000002
+TMR0L                             00000FD6
+TMR0ON                            00000007
+TMR0_ISR                          000000DA
+TMR1                              00000FCE
+TMR1CS                            00000001
+TMR1H                             00000FCF
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1IP                            00000000
+TMR1L                             00000FCE
+TMR1ON                            00000000
+TMR2                              00000FCC
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2IP                            00000001
+TMR2ON                            00000002
+TMR3                              00000FB2
+TMR3CS                            00000001
+TMR3H                             00000FB3
+TMR3IE                            00000001
+TMR3IF                            00000001
+TMR3IP                            00000001
+TMR3L                             00000FB2
+TMR3ON                            00000000
+TO                                00000003
+TOS                               00000FFD
+TOSH                              00000FFE
+TOSL                              00000FFD
+TOSU                              00000FFF
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000F92
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISA6                            00000006
+TRISA7                            00000007
+TRISB                             00000F93
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE 19
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRISC                             00000F94
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000F95
+TRISD0                            00000000
+TRISD1                            00000001
+TRISD2                            00000002
+TRISD3                            00000003
+TRISD4                            00000004
+TRISD5                            00000005
+TRISD6                            00000006
+TRISD7                            00000007
+TRISE                             00000F96
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRMT                              00000001
+TUN0                              00000000
+TUN1                              00000001
+TUN2                              00000002
+TUN3                              00000003
+TUN4                              00000004
+TX                                00000006
+TX9                               00000006
+TX9D                              00000000
+TXCKP                             00000004
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXIP                              00000004
+TXREG                             00000FAD
+TXSTA                             00000FAC
+UA                                00000001
+VCFG0                             00000004
+VCFG1                             00000005
+VDIRMAG                           00000007
+VPP                               00000003
+VREFN                             00000002
+VREFP                             00000003
+W                                 00000000
+WCOL                              00000007
+WDTCON                            00000FD1
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE 20
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+WR                                00000001
+WREG                              00000FE8
+WREN                              00000002
+WRERR                             00000003
+WUE                               00000001
+Z                                 00000002
+ZERO                              00000000
+_BOREN_NOSLP_2L                   000000FD
+_BOREN_OFF_2L                     000000F9
+_BOREN_ON_2L                      000000FB
+_BOREN_SBORDIS_2L                 000000FF
+_BORV_0_2L                        000000E7
+_BORV_1_2L                        000000EF
+_BORV_2_2L                        000000F7
+_BORV_3_2L                        000000FF
+_CCP2MX_PORTBE_3H                 000000FE
+_CCP2MX_PORTC_3H                  000000FF
+_CONFIG1H                         00300001
+_CONFIG2H                         00300003
+_CONFIG2L                         00300002
+_CONFIG3H                         00300005
+_CONFIG4L                         00300006
+_CONFIG5H                         00300009
+_CONFIG5L                         00300008
+_CONFIG6H                         0030000B
+_CONFIG6L                         0030000A
+_CONFIG7H                         0030000D
+_CONFIG7L                         0030000C
+_CP0_OFF_5L                       000000FF
+_CP0_ON_5L                        000000FE
+_CP1_OFF_5L                       000000FF
+_CP1_ON_5L                        000000FD
+_CP2_OFF_5L                       000000FF
+_CP2_ON_5L                        000000FB
+_CP3_OFF_5L                       000000FF
+_CP3_ON_5L                        000000F7
+_CPB_OFF_5H                       000000FF
+_CPB_ON_5H                        000000BF
+_CPD_OFF_5H                       000000FF
+_CPD_ON_5H                        0000007F
+_DEBUG_OFF_4L                     000000FF
+_DEBUG_ON_4L                      0000007F
+_DEVID1                           003FFFFE
+_DEVID2                           003FFFFF
+_EBTR0_OFF_7L                     000000FF
+_EBTR0_ON_7L                      000000FE
+_EBTR1_OFF_7L                     000000FF
+_EBTR1_ON_7L                      000000FD
+_EBTR2_OFF_7L                     000000FF
+_EBTR2_ON_7L                      000000FB
+_EBTR3_OFF_7L                     000000FF
+_EBTR3_ON_7L                      000000F7
+_EBTRB_OFF_7H                     000000FF
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE 21
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_EBTRB_ON_7H                      000000BF
+_FCMEN_OFF_1H                     000000BF
+_FCMEN_ON_1H                      000000FF
+_IDLOC0                           00200000
+_IDLOC1                           00200001
+_IDLOC2                           00200002
+_IDLOC3                           00200003
+_IDLOC4                           00200004
+_IDLOC5                           00200005
+_IDLOC6                           00200006
+_IDLOC7                           00200007
+_IESO_OFF_1H                      0000007F
+_IESO_ON_1H                       000000FF
+_LPT1OSC_OFF_3H                   000000FB
+_LPT1OSC_ON_3H                    000000FF
+_LVP_OFF_4L                       000000FB
+_LVP_ON_4L                        000000FF
+_MCLRE_OFF_3H                     0000007F
+_MCLRE_ON_3H                      000000FF
+_OSC_ECIO6_1H                     000000F5
+_OSC_EC_1H                        000000F4
+_OSC_HSPLL_1H                     000000F6
+_OSC_HS_1H                        000000F2
+_OSC_INTIO67_1H                   000000F8
+_OSC_INTIO7_1H                    000000F9
+_OSC_LP_1H                        000000F0
+_OSC_RCIO6_1H                     000000F7
+_OSC_RC_1H                        000000F3
+_OSC_XT_1H                        000000F1
+_PBADEN_OFF_3H                    000000FD
+_PBADEN_ON_3H                     000000FF
+_PWRT_OFF_2L                      000000FF
+_PWRT_ON_2L                       000000FE
+_STVREN_OFF_4L                    000000FE
+_STVREN_ON_4L                     000000FF
+_WDTPS_1024_2H                    000000F5
+_WDTPS_128_2H                     000000EF
+_WDTPS_16384_2H                   000000FD
+_WDTPS_16_2H                      000000E9
+_WDTPS_1_2H                       000000E1
+_WDTPS_2048_2H                    000000F7
+_WDTPS_256_2H                     000000F1
+_WDTPS_2_2H                       000000E3
+_WDTPS_32768_2H                   000000FF
+_WDTPS_32_2H                      000000EB
+_WDTPS_4096_2H                    000000F9
+_WDTPS_4_2H                       000000E5
+_WDTPS_512_2H                     000000F3
+_WDTPS_64_2H                      000000ED
+_WDTPS_8192_2H                    000000FB
+_WDTPS_8_2H                       000000E7
+_WDT_OFF_2H                       000000FE
+_WDT_ON_2H                        000000FF
+MPASM  5.51                         MICRO.ASM   4-10-2024  14:30:11         PAGE 22
+Microwave
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_WRT0_OFF_6L                      000000FF
+_WRT0_ON_6L                       000000FE
+_WRT1_OFF_6L                      000000FF
+_WRT1_ON_6L                       000000FD
+_WRT2_OFF_6L                      000000FF
+_WRT2_ON_6L                       000000FB
+_WRT3_OFF_6L                      000000FF
+_WRT3_ON_6L                       000000F7
+_WRTB_OFF_6H                      000000FF
+_WRTB_ON_6H                       000000BF
+_WRTC_OFF_6H                      000000FF
+_WRTC_ON_6H                       000000DF
+_WRTD_OFF_6H                      000000FF
+_WRTD_ON_6H                       0000007F
+_XINST_OFF_4L                     000000BF
+_XINST_ON_4L                      000000FF
+__18F4520                         00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXX----XXXX---- ---------------- XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0100 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0140 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0180 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+01C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXX---- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Bytes Used:   452
+Program Memory Bytes Free: 32316
+
+
+Errors   :     0
+Warnings :     9 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

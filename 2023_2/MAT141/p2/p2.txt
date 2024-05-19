@@ -1,0 +1,15 @@
+gaus jacobi gaus seidel, aprender na mao, EDO tudo no octave, euler, ponto medio, heun nao interativo, ralston, terceira ordem e quarta ordem,
+
+estudar pivoteamento e LU na mão
+
+no octave, LU:
+[L,U,P] = lu(A)
+
+y = inv(L)*P*b
+x= inv(U)*y
+det(A) determinante
+max(E) maior valor do vetor
+
+x=A\b
+x=linsolve(A,b)
+A=

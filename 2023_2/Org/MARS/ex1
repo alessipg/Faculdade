@@ -1,0 +1,102 @@
+.data
+	vetor:
+		.align 2
+		.word 2,3,5,7,11,13,17,6,9,10
+	flag:					#valor que define se será ativada a função de busca ou de primos
+		.word 0
+.text
+	.main:
+		lw $t0, flag 			#armazena em $t0 o valor que definirá a função a ser chamada
+		li $a0, 17			#como estou fazendo o ponto extra, vou passar a chave de busca como argumento e nao utilizar t1
+		# Condição de chamada	
+    		beq $t0, 0, BUSCAR
+    		beq $t0, 1, PRIMOS
+    		j EXIT
+    		BUSCAR:
+    			jal busca    		# Chamada para a função de busca
+    			j EXIT
+    		PRIMOS:
+    			jal primos
+    			j EXIT
+    		EXIT:
+    		li $v0, 10
+    		syscall
+    	busca:
+    		# Alinhamento do frame pointer com stack pointer
+    		move $fp, $sp		
+		
+		# Criando o registro de ativação
+		addi $sp, $sp, -12	
+		sw $ra, 12($sp)      	# Salva o endereço de retorno na pilha
+		sw $s0, 8($sp)      	# Salva o conteúdo de $s0 para armazenar uma variavel local
+		sw $s1, 4($sp)      	# Salva o conteúdo de $s1 para armazenar uma variavel local
+		addi $s1, $zero, 0
+		addi $s2, $zero, -1
+		LOOP:
+			addi $s2, $s2, 1
+    			beq $s2, 10, nonexist
+			lw $s3, vetor($s1)
+    			beq $a0, $s3, sair
+    			addi $s1, $s1, 4	
+    			j LOOP
+    		nonexist:
+    			sub $s2, $s2, 11	#também poderia reservar s2 somente para receber o valor final, mas optei por fazer esse desvio
+    		sair:
+    			move $t2, $s2
+    			move $a0, $s2 
+    			jal imprimir
+    		
+    			lw $ra, 12($sp)		# Atualiza o endereço de retorno
+    			lw $s0, 8($sp)		# Restaura o conteúdo de $s0
+    			lw $s1, 4($sp)		# Restaura o conteúdo de $s1
+   
+    			move $sp, $fp		# Desaloca o registro de ativação
+    			jr $ra              	# Retornar para o endereço de retorno armazenado em $ra
+    	primos:
+    		# Alinhamento do frame pointer com stack pointer
+    		move $fp, $sp		
+		
+		# Criando o registro de ativação
+		addi $sp, $sp, -12	
+		sw $ra, 12($sp)      	# Salva o endereço de retorno na pilha
+		sw $s0, 8($sp)      	# Salva o conteúdo de $s0 para armazenar uma variavel local
+		sw $s1, 4($sp)      	# Salva o conteúdo de $s1 para armazenar uma variavel local
+    		
+    		addi $s1, $zero, 0
+		addi $s2, $zero, 0
+		LOOP2:
+			bgt $s1, 40, sair2	#condicional do fim do vetor
+			lw $s3, vetor($s1)
+			ble $s3, 1, POINT	#menor ou igual a um não é primo
+			sub $s4, $s4, $s4	#reseta s4 para o começo de cada for
+			addi $s4, $zero, 2
+			CHECK:
+				sll $s0, $s4, 1
+				bgt $s0, $s3, PRIMO	#verifica se o denominador é menor ou igual a raiz do numero, para evitar comparações desnecessárias
+				div $s3, $s4		
+				mfhi $t4
+				beqz $t4, POINT
+				addi $s4, $s4, 1	#iteração
+				j CHECK	
+			PRIMO:
+			addi $s2, $s2, 1
+    			POINT:
+    			addi $s1, $s1, 4	
+    			j LOOP2
+			
+		sair2:
+		move $t3, $s2
+    		move $a0, $s2  
+    		jal imprimir
+    		
+    		lw $ra, 12($sp)		# Atualiza o endereço de retorno
+    		lw $s0, 8($sp)		# Restaura o conteúdo de $s0
+    		lw $s1, 4($sp)		# Restaura o conteúdo de $s1
+   
+    		move $sp, $fp		# Desaloca o registro de ativação
+    		jr $ra              	# Retornar para o endereço de retorno armazenado em $ra
+    		
+    	imprimir:
+    		li $v0, 1
+    		syscall
+    		jr $ra			# Retornar para o endereço de retorno armazenado em $ra

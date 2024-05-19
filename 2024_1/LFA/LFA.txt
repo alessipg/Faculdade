@@ -1,0 +1,30 @@
+palavra = aaba
+
+prefixos = 'e',a,aa,aab,aaba
+
+sufixos = 'e',a,ba,aba,aaba
+
+subpalavras = 'e',a,b,ab,ba,aa,aab,aba,aaba
+
+
+
+w = bb
+
+v = baaaa
+
+
+vw = baaaabb
+
+v'e' = baaaa
+
+
+===================
+w = bba
+a^5= aaaaa
+
+w^1= bba
+
+w^3a = bbabbabbaa
+
+w^2a^3 = bbabbaaaa
+

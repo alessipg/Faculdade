@@ -1,0 +1,29 @@
+adicionar opção de ouvir enunciado
+encontrar uma solução para a coleta de todas as pontuações
+opção de alterar tamanho da fonte
+
+----------------------------------------------------------------------------------------------------------------------
+aprimorar o sistema de pontuação (tempo máx, definir pontuação máx), detalhar pontuação
+substituir botão de retornar ao menu por casinha
+botao de avançar e do vídeo estão iguais, precisa diferenciar
+descrição das opções para que eles possam identificar as alternativas
+se possível, apresentar as opções erradas no vídeo (???)
+parte de dicas, substituir botões por símbolos (jóia ou negativo), confirmação de ajuda é realmente necessária?
+adicionar barra de progresso para identificar as fases e fim do jogo
+----------------------------------------------------------------------------------------------------------------------
+
+botão "sobre o jogo"
+botões de navegação (rever se estão ok, no sentido durante cada exercício)
+definir escopos dos desafios (tempo, tentativas, etc.)
+
+
+remover pular vídeo
+
+CASO DE USO 
+
+mudar finalizar fase 1 para calcular pontuação
+caso de uso gerar relatório: buscar pontuação
+entre casos de uso só pode haver extend ou include 
+NÃO É 1 CASO DE USO PARA CADA BOTÃO
+extend geralmente é na direção contrária
+

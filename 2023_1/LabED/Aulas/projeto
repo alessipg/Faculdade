@@ -1,0 +1,47 @@
+Simular uma block chain simplificada
+* Hash: assinatura de um dado
+
+
+Dado ===> [ALGORITMO QUE CALCULA CODIGO HASH] ===> código hash (assinatura)
+
+FUNDAMENTOS
+
+Endereços
+->unsigned char [0,255]
+
+Transação   unsigned char  unsigned char   unsigned char 
+           ->EndOrigem      EndDestino       [QtdBitcoins]
+             [0,255]          [0,255]          [1,50]
+
+Qtd de transações em um bloco será definida aleatoriamente 
+Min: 1 Max: 61
+Valores de transação também serão aleatórios
+
+Carteira Global
+Vetor de unsigned int de 256 posições
+
+|49|3|  ...  | 0 |
+ 0  1         255
+
+neste exemplo, o end 255 tem 0 bitcoins e o end 1 tem 3 
+
+
+GENESIS
+Primeiro bloco (ngm tem bitcoins)
+dado
+->end do minerador(aleatorio)
+
+Validação de um bloco
+.nenhuma transação registrada em um bloco será considerada válida até que o bloco seja minerado
+MINERAÇÃO
+.achar o hash que valida o bloco, ou seja, hash que começa com 1 zero decimal ou 2 hexadecimais (00)
+
+após minerar um bloco
+1.atualize as carteiras, incluindo a recompensa para o minerador.
+  a recompensa será 50 bitcoins
+     a ultima posicao do vetor data terá o endereço do minerador definido aleatoriamente
+
+
+
+
+

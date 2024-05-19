@@ -1,0 +1,90 @@
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+;	=-=-=-=-=-=-=-   DISCIPLINA SISTEMAS MICROPROCESSADOS   -=-=-=-=-=-=-=-=
+;	PROGRAMA-BASE PARA MICROCONTROLADORES PIC16F877
+;	Cristhiane Gonçalves
+;	março de 2024
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+#INCLUDE <P16F877A.INC>
+	__CONFIG _CP_OFF & _CPD_OFF & _DEBUG_OFF & _LVP_OFF & _WRT_OFF & _BODEN_ON & _PWRTE_ON & _WDT_OFF & _HS_OSC
+
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+; *                         DEFINIÇÃO DAS VARIÁVEIS
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+; VARI?VEIS DO USU?RIO LOCALIZADAS A PARTIR DO ENDERE?O 0X20 DA RAM
+
+	CBLOCK	0X20
+		CONT
+	ENDC
+
+; VARI?VEIS COM ENDERE?O ESPEC?FICO
+
+W_TEMP			EQU		0X7F
+STATUS_TEMP		EQU		0X7E
+PCLATH_TEMP		EQU		0X7D
+
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+; *                      DEFINI??O DOS BANCOS DE RAM
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+#DEFINE  BANK1  BSF	STATUS,RP0 	; SELECIONA BANK1 DA MEMORIA RAM
+#DEFINE  BANK0  BCF	STATUS,RP0	; SELECIONA BANK0 DA MEMORIA RAM
+
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+; *                   VETOR DE RESET DO MICROCONTROLADOR
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+;  POSI??O INICIAL PARA EXECU??O DO PROGRAMA
+
+		ORG		0X0000		; ENDERE?O DO VETOR DE RESET
+		GOTO	INICIO		; DESVIA PARA O IN?CIO DO PROGRAMA
+
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+; *                             INTERRUP??ES
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+		ORG		0x0004		; ENDERE?O DO VETOR DE INTERRUP??ES
+		MOVWF	W_TEMP			; W -> W_TEMP
+		SWAPF	STATUS,W		; TROCA NIBBLES STATUS -> W
+		MOVWF	STATUS_TEMP		; W -> STATUS_TEMP
+		SWAPF	PCLATH,W		; TROCA NIBBLES STATUS -> W
+		MOVWF	PCLATH_TEMP		; W -> STATUS_TEMP
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		BCF		STATUS,RP0		; Assegura o BANCO 0 ativo
+
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+FIMINT	SWAPF	PCLATH_TEMP,W	; TROCA NIBBLES DE STATUS_TEMP -> W
+		MOVWF	PCLATH			; W -> STATUS
+		SWAPF	STATUS_TEMP,W	; TROCA NIBBLES DE STATUS_TEMP -> W
+		MOVWF	STATUS			; W -> STATUS
+		SWAPF	W_TEMP,F		; TROCA NIBBLES DE W_TEMP -> W_TEMP
+		SWAPF	W_TEMP,W		; TROCA NIBBLES DE W_TEMP -> W
+		RETFIE				; FINALIZA A INTERRUP??O
+
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+; *                         PROGRAMA PRINCIPAL
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+INICIO
+		GOTO	ITEM_A
+
+ITEM_A
+L2		MOVLW	0X00		; 0 -> W
+		MOVWF	CONT		; W -> CONT
+L1		INCF	CONT,F		; CONT+1 -> CONT
+		MOVLW	D'9'		; CONT -> W
+		SUBWF	CONT,W		; CONT-W -> W
+		BTFSS	STATUS,Z	; ZERO?
+		GOTO	L1			; N?O
+		GOTO	L2			; SIM
+
+
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+; *                            SUBROTINAS
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+; *                            FIM DO PROGRAMA
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+		END				; FIM DO PROGRAMA

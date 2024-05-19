@@ -1,0 +1,52 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Mon Apr 15 14:30:51 2024
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000048
+ .config_300001_DISPLAY.O    romdata   0x300001    program   0x000001
+ .config_300002_DISPLAY.O    romdata   0x300002    program   0x000001
+ .config_300003_DISPLAY.O    romdata   0x300003    program   0x000001
+ .config_300005_DISPLAY.O    romdata   0x300005    program   0x000001
+ .config_300006_DISPLAY.O    romdata   0x300006    program   0x000001
+ .config_300008_DISPLAY.O    romdata   0x300008    program   0x000001
+ .config_300009_DISPLAY.O    romdata   0x300009    program   0x000001
+ .config_30000A_DISPLAY.O    romdata   0x30000a    program   0x000001
+ .config_30000B_DISPLAY.O    romdata   0x30000b    program   0x000001
+ .config_30000C_DISPLAY.O    romdata   0x30000c    program   0x000001
+ .config_30000D_DISPLAY.O    romdata   0x30000d    program   0x000001
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000047      
+                            0x300001    0x300003      
+                            0x300005    0x300006      
+                            0x300008    0x30000d      
+            83 out of 33048 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                DECODE_CT   0x000014    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\display.asm
+                   INICIO   0x000004    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\display.asm
+               PROGRAMA_A   0x000008    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\display.asm
+                   TABELA   0x000028    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\display.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   INICIO   0x000004    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\display.asm
+               PROGRAMA_A   0x000008    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\display.asm
+                DECODE_CT   0x000014    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\display.asm
+                   TABELA   0x000028    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\Display\display.asm
+
+

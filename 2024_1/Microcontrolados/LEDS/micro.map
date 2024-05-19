@@ -1,0 +1,122 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Wed Apr 10 14:30:12 2024
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000004
+                   .org_2       code   0x000008    program   0x000004
+                   .org_3       code   0x000020    program   0x0001bc
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000003      
+                            0x000008    0x00000b      
+                            0x000020    0x0001db      
+            452 out of 33048 program addresses used, program memory utilization is 1%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   BUZZER   0x000080    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                    CLOOP   0x0000f0    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   COLRB0   0x000104    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   COLRB1   0x00012a    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   COLRB2   0x000150    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   COLRB3   0x000176    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                     COOK   0x0000a2    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   C_LOOP   0x00006c    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                  C_START   0x00006a    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                    DLOOP   0x0000ee    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                 DOORWAIT   0x0000b2    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                  GETCODE   0x0001b6    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                    INPUT   0x00008e    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   I_LOOP   0x00005e    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB04   0x00010a    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB05   0x000112    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB06   0x00011a    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB07   0x000122    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB14   0x000130    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB15   0x000138    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB16   0x000140    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB17   0x000148    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB24   0x000156    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB25   0x00015e    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB26   0x000166    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB27   0x00016e    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB34   0x00017c    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB35   0x000184    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB36   0x00018c    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB37   0x000194    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYCHK   0x0000f6    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                  KEYCODE   0x000104    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                  LEDCODE   0x0001d0    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                     MAIN   0x000020    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   OUTLED   0x0001a0    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                     READ   0x0001cc    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                      RSM   0x0000d4    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                      RTN   0x00019c    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   SETRB0   0x000108    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   SETRB1   0x00012e    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   SETRB2   0x000154    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   SETRB3   0x00017a    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                    STOPB   0x0000c8    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                 TMR0_ISR   0x0000da    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                     MAIN   0x000020    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   I_LOOP   0x00005e    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                  C_START   0x00006a    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   C_LOOP   0x00006c    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   BUZZER   0x000080    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                    INPUT   0x00008e    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                     COOK   0x0000a2    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                 DOORWAIT   0x0000b2    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                    STOPB   0x0000c8    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                      RSM   0x0000d4    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                 TMR0_ISR   0x0000da    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                    DLOOP   0x0000ee    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                    CLOOP   0x0000f0    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYCHK   0x0000f6    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                  KEYCODE   0x000104    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   COLRB0   0x000104    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   SETRB0   0x000108    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB04   0x00010a    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB05   0x000112    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB06   0x00011a    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB07   0x000122    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   COLRB1   0x00012a    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   SETRB1   0x00012e    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB14   0x000130    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB15   0x000138    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB16   0x000140    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB17   0x000148    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   COLRB2   0x000150    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   SETRB2   0x000154    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB24   0x000156    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB25   0x00015e    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB26   0x000166    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB27   0x00016e    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   COLRB3   0x000176    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   SETRB3   0x00017a    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB34   0x00017c    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB35   0x000184    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB36   0x00018c    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   KEYB37   0x000194    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                      RTN   0x00019c    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                   OUTLED   0x0001a0    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                  GETCODE   0x0001b6    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                     READ   0x0001cc    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+                  LEDCODE   0x0001d0    program     static C:\Users\Gabriel\Documents\Dev\Faculdade\2024_1\Microcontrolados\LEDS\micro.asm
+
+

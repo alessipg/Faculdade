@@ -1,0 +1,24 @@
+
+n²+n+nlogn = teta(n²) pois n tende ao infinito, o restante n tem importancia nesse caso
+
+n²logn + n² +raizn = teta(n²logn)
+
+n+nlogn = O(n³) pois a grandeza é menor ou igual a n²
+
+
+
+T(n) = 1 , 
+        n+2+(n/2) -> T(n) = O(nlogn)
+
+
+void nlogn(int n){
+    if(n <=0){
+
+    }
+    for(int i=0;i<n;i++){
+        (comandos); //no maximo n computações
+    }
+    nlogn(n/2);
+    nlogn(n/2);
+
+}

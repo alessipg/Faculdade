@@ -1,0 +1,41 @@
+/*
+LISTA|INSERÇÃO |REMOÇÃO  |DISCIPLINA|ED         |PONTEIRO DE ACESSO|FIM DA LISTA(ULTIMO NÓ)
+-----+---------+---------+----------+-----------+------------------+-----------------------
+PILHA|NO INICIO|NO INICIO|LIFO      |LISTA      |DA ACESSO AO      |AQUELE CUJO CAMPO 
+     |DA LISTA |         |          | SIMPLES   |PRIMEIRO          |É NULL
+-----+---------+---------+----------+-----------+------------------+-----------------------
+FILA |NO FIM   |NO INICIO|FIFO      |LISTA      |DA ACESSO AO      |AQUELE APONTADO PELO
+     |         |         |          |CIRCULAR   |ULTIMO            |PONTEIRO DE ACESSO(O 
+     |         |         |          |           |                  |CAMPO PROX DO ULTIMO
+     |         |         |          |           |                  |APONTA PARA O PRIMEIRO)
+_____?_________?_________?__________?___________?__________________?_______________________
+Sobre termos "fim" e "início" no contexto de listas:
+não tem, necessariamente, vínculo com a sequencia de 
+dados de inserção dadas pelo usuário da estrutura.
+*/
+
+#include <stdlib.h>
+typedef struct TNo{
+    int chave;
+    struct TNo *prox;
+}TNo;
+
+TNo *insereFim(TNo **ult, int k){
+    if(*ult == NULL){
+        *ult=malloc(sizeof(TNo));
+        if(*ult == NULL) return NULL;
+        (*ult)->chave = k;
+        (*ult)->prox = *ult;
+        return *ult;//se tiver return no if, não há necessidade do else (LEMBRAR)
+    }
+    TNo *novo = malloc(sizeof(TNo));
+    if(novo == NULL) return NULL;
+    TNo* oldult = *ult;
+    *ult = novo;
+    novo->prox = oldult->prox;
+    oldult->prox = novo;
+
+}
+
+
+remover inicio 
