@@ -1,0 +1,6 @@
+a = 10
+b = 5
+for(x=0;x<=a||x<=b;x=x+1) print(x);
+for(x=0;x<=a&&x<=b;x=x+1) print(x);
+for(x=0;x<=a&x<=b;x=x+1) print(x);
+for(x=0;x<=a|x<=b;x=x+1) print(x);

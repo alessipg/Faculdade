@@ -1,0 +1,2 @@
+não li bem o enunciado na primeira vez e fui fazendo os exercícios, então acabei implementando praticamente toda a análise léxica de C
+tô mandando só para não perder o esforço mesmo kkkkkkk

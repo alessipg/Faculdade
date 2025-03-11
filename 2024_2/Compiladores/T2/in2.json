@@ -1,0 +1,34 @@
+{
+    "agentCode": {
+        "ag1": {
+            "name": "carla",
+            "beliefs": [
+                "estaEnsolarado",
+                "tenhoOculosEscuros",
+                "precisoFazerCompras"
+            ],
+            "goal": "comprarMantimentos",
+            "plans": {
+                "p1": {
+                    "trigger": "G_comprarMantimentos",
+                    "ctx": "B_precisoFazerCompras",
+                    "body": [
+                        "A_fazer lista de compras",
+                        "A_ir ao supermercado",
+                        "A_comprar mantimentos",
+                        "B_comprasFeitas",
+                        "G_voltarParaCasa"
+                    ]
+                },
+                "p2": {
+                    "trigger": "G_voltarParaCasa",
+                    "ctx": "B_comprasFeitas",
+                    "body": [
+                        "A_pegar transporte",
+                        "A_guardar mantimentos"
+                    ]
+                }
+            }
+        }
+    }
+}

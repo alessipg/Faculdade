@@ -1,0 +1,63 @@
+{
+    "agentCode": {
+        "ag1": {
+            "name": "bob",
+            "beliefs": [
+                "estaChovendo",
+                "naotenhoGuardaChuva",
+                "tenhoProva"
+            ],
+            "goal": "comprarGuardaChuva",
+            "plans": {
+                "p1": {
+                    "trigger": "G_comprarGuardaChuva",
+                    "ctx": "B_estaChovendo",
+                    "body": [
+                        "A_sair para comprar guardachuva",
+                        "A_procurar loja",
+                        "A_comprar guardachuva",
+                        "G_estudar"
+                    ]
+                },
+                "p2": {
+                    "trigger": "G_estudar",
+                    "ctx": "B_tenhoProva",
+                    "body": [
+                        "A_convidar alice",
+                        "A_estudar na biblioteca"
+                    ]
+                }
+            }
+        },
+        "ag2": {
+            "name": "alice",
+            "beliefs": [
+                "estaChovendo",
+                "tenhoGuardaChuva",
+                "tenhoProva"
+            ],
+            "goal": "",
+            "plans": {
+                "p1": {
+                    "trigger": "B_tenhoGuardaChuva",
+                    "ctx": "B_estaChovendo",
+                    "body": [
+                        "A_posso estudar",
+                        "A_recebi convite de bob",
+                        "G_estudarNaBiblioteca"
+                    ]
+                },
+                "p2": {
+                    "trigger": "G_estudarNaBiblioteca",
+                    "ctx": "B_tenhoProva",
+                    "body": [
+                        "A_escolher caminho",
+                        "A_usar guardachuva",
+                        "A_ir para biblioteca",
+                        "A_estudar!"
+                    ]
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "basiclang.h": "c",
+        "string.h": "c",
+        "stdarg.h": "c",
+        "stdio.h": "c",
+        "conversor.h": "c"
+    }
+}

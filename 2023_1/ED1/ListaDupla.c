@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-//Nós agora terão campo prox e campo anterior (preview)
-//preview do primeiro nó sempre aponta para null, assim como o prox do ultimo aponta para Null;
+//Nï¿½s agora terï¿½o campo prox e campo anterior (preview)
+//preview do primeiro nï¿½ sempre aponta para null, assim como o prox do ultimo aponta para Null;
 
 typedef struct No {
     int chave;
@@ -24,7 +24,7 @@ void insereInicio(Lista *lista, int k){
     No *novo = malloc(sizeof(No));
     if(!novo) return;
     novo->chave = k;
-    if(!lista->inicio){//verifica se a lista é unitária
+    if(!lista->inicio){//verifica se a lista ï¿½ unitï¿½ria
     novo->ant = NULL;
     novo->prox = NULL;
     lista->inicio = novo;
@@ -99,8 +99,8 @@ int main (){
 
 /*#include <stdio.h>
 #include <stdlib.h>
-//Nós agora terão campo prox e campo anterior (preview)
-//preview do primeiro nó sempre aponta para null, assim como o prox do ultimo aponta para Null;
+//Nï¿½s agora terï¿½o campo prox e campo anterior (preview)
+//preview do primeiro nï¿½ sempre aponta para null, assim como o prox do ultimo aponta para Null;
 
 typedef struct No {
     int chave;
@@ -123,7 +123,7 @@ void insereInicio(Lista *lista, int k){
     No *novo = malloc(sizeof(No));
     if(!novo) return;
     novo->chave = k;
-    if(!lista->inicio){//verifica se a lista é unitária
+    if(!lista->inicio){//verifica se a lista ï¿½ unitï¿½ria
     novo->ant = NULL;
     novo->prox = NULL;
     lista->inicio = novo;

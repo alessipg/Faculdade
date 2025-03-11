@@ -1,0 +1,122 @@
+{
+  "agentCode": {
+      "ag1": {
+          "name": "bob",
+          "beliefs": [
+              "estaChovendo",
+              "naotenhoGuardaChuva",
+              "tenhoProva"
+          ],
+          "goal": "comprarGuardaChuva",
+          "plans": {
+              "p1": {
+                  "trigger": "G_comprarGuardaChuva",
+                  "ctx": "B_estaChovendo",
+                  "body": [
+                      "A_sair para comprar guardachuva",
+                      "A_procurar loja",
+                      "A_comprar guardachuva",
+                      "G_estudar"
+                  ]
+              },
+              "p2": {
+                  "trigger": "G_estudar",
+                  "ctx": "B_tenhoProva",
+                  "body": [
+                      "A_estudar sozinho"
+                  ]
+              }
+          }
+      },
+      "ag2": {
+          "name": "alice",
+          "beliefs": [
+              "estaChovendo",
+              "tenhoGuardaChuva",
+              "tenhoProva"
+          ],
+          "goal": "",
+          "plans": {
+              "p1": {
+                  "trigger": "B_tenhoGuardaChuva",
+                  "ctx": "B_estaChovendo",
+                  "body": [
+                      "A_preparar materiais de estudo",
+                      "G_estudarNaBiblioteca"
+                  ]
+              },
+              "p2": {
+                  "trigger": "G_estudarNaBiblioteca",
+                  "ctx": "B_tenhoProva",
+                  "body": [
+                      "A_escolher caminho",
+                      "A_usar guardachuva",
+                      "A_ir para biblioteca",
+                      "A_estudar!"
+                  ]
+              }
+          }
+      },
+      "ag3": {
+          "name": "carlos",
+          "beliefs": [
+              "estaFrio",
+              "tenhoCasaco",
+              "precisoFazerCompras"
+          ],
+          "goal": "irAoMercado",
+          "plans": {
+              "p1": {
+                  "trigger": "G_irAoMercado",
+                  "ctx": "B_precisoFazerCompras",
+                  "body": [
+                      "A_colocar casaco",
+                      "A_sair para o mercado",
+                      "A_comprar mantimentos"
+                  ]
+              }
+          }
+      },
+      "ag4": {
+          "name": "diana",
+          "beliefs": [
+              "tenhoTrabalho",
+              "gostoDeCafe",
+              "cafeteriaAberta"
+          ],
+          "goal": "tomarCafe",
+          "plans": {
+              "p1": {
+                  "trigger": "G_tomarCafe",
+                  "ctx": "B_cafeteriaAberta",
+                  "body": [
+                      "A_pegar carteira",
+                      "A_ir para cafeteria",
+                      "A_comprar cafe",
+                      "A_relaxar antes do trabalho"
+                  ]
+              }
+          }
+      },
+      "ag5": {
+          "name": "eduardo",
+          "beliefs": [
+              "tenhoSono",
+              "precisoEstudar",
+              "tenhoCafe"
+          ],
+          "goal": "acordar",
+          "plans": {
+              "p1": {
+                  "trigger": "G_acordar",
+                  "ctx": "B_tenhoSono",
+                  "body": [
+                      "A_beber cafe",
+                      "A_lavar rosto",
+                      "A_estudar"
+                  ]
+              }
+          }
+      }
+  }
+}

@@ -1,0 +1,2 @@
+no exemplo 02, modificamos a definição de tabs para [\t] (antes [\t]+), assim o flex identifica uma tabulação a cada vez 
+que TAB for pressionado, ao invés de considerar qualquer número de tabulações entre outros 2 tokens como somente 1

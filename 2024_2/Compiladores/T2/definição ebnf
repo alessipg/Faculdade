@@ -1,0 +1,16 @@
+agents ::= '{' 'agentCode' ':' '{' agentList '}' '}'
+agentList ::= string ':' agent | string ':' agent agentList
+agent ::= '{' name ',' beliefs ',' goal ',' plans '}'
+name ::= 'name' ':' string
+beliefs ::= 'beliefs' ':' '[' beliefList ']'
+beliefList ::= string | string ',' beliefList
+goal ::= 'goal' ':' string
+plans ::= 'plans' ':' '{' planList '}'
+planList ::= plan | plan ',' planList
+plan ::= string ':' '{' 'trigger' ':' knowledge ',' ctx ':' knowledge ',' 'body' ':' '[' bodyList']' '}'
+knowledge ::= P_BELIEF | P_GOAL
+bodyList ::= P_ACTION | P_BELIEF | P_GOAL | P_ACTION ',' bodyList | P_BELIEF ',' bodyList | P_GOAL ',' bodyList
+string      ::= '"' char* '"'
+P_ACTION    ::= '"A_' char* '"'
+P_BELIEF    ::= '"B_' char* '"'
+P_GOAL      ::= '"G_' char* '"'
