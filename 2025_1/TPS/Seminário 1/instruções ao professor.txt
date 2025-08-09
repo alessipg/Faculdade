@@ -1,0 +1,11 @@
+dataset: https://openneuro.org/datasets/ds004504/versions/1.0.8
+
+Todos os plots foram feitos com sinais da pasta "derivatives" (pré-processados). Deixei apenas 1 sinal para exemplo, devido ao tamanho do arquivo.
+
+O nível de compressão é definido pela varíavel "q", esta sendo uma potência de 2.
+
+Para execução, basta ter o Matlab, o toolbox de Sinais e o EEGLAB instalados.
+
+Obs: o PDF é o mesmo utilizado como auxílio na apresentação do seminário.
+
+Aluno: Gabriel Alessi Posonski
